@@ -1,10 +1,12 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('ping')
-		.setDescription('Replies "Soft!"'),
-	async execute(interaction) {
-		await interaction.reply("Zapier for non-developer ass bitches. They got soft hands brother.");
-	},
+  data: new SlashCommandBuilder()
+    .setName("ping")
+    .setDescription("Test command to check if the bot is online."),
+  async execute(interaction) {
+    await interaction.reply(
+      "Response received! Bot is online and responding."
+    );
+  },
 };
