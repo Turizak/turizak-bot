@@ -5,7 +5,6 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "npm install",
     "start": "node main.js",
     "build": "node deploy-commands.js",
     "lint": "prettier . --check",
