@@ -4,16 +4,28 @@
   "description": "Discord bot for Turizak projects",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "npm install",
+    "start": "node main.js",
+    "build": "node deploy-commands.js",
+    "lint": "prettier . --check",
+    "fix": "prettier . --write",
+    "prepare": "husky install"
   },
   "author": "rk",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
-    "node-fetch": "^3.3.2"
+    "husky": "^9.1.5",
+    "node-fetch": "^3.3.2",
+    "prettier": "^3.3.3",
+    "winston": "^3.14.2"
   },
   "devDependencies": {
-    "eslint": "^9.9.0"
+    "@eslint/js": "^9.9.1",
+    "eslint": "^9.9.1",
+    "globals": "^15.9.0",
+    "husky": "^8.0.0"
   }
 }

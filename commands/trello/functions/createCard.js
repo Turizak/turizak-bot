@@ -4,21 +4,20 @@ const { trelloInfo } = require("../data/trelloInfo");
 const { memberInfo } = require("../data/memberInfo");
 const { colorInfo } = require("../data/colorInfo");
 const { toTitleCase } = require("../../../utils/toTitleCase");
+const { logger } = require("../../../utils/logger");
 
-createCard = async (interaction, board) => {
+const createCard = async (interaction, board) => {
   const fetch = (await import("node-fetch")).default;
 
   const type = interaction.options.getString("type");
   const title = interaction.options.getString("title");
   const description = interaction.options.getString("description");
-  const repo = interaction.options.getString("repo")
-    ? interaction.options.getString("repo")
-    : null;
+  const repo = interaction.options.getString("repo") ? interaction.options.getString("repo") : null;
   const assignment = interaction.options.getString("assignment")
     ? interaction.options.getString("assignment")
     : null;
 
-  let labels = [];
+  const labels = [];
   if (type) {
     labels.push(boardInfo[board].labelID[type]);
   }
@@ -31,15 +30,15 @@ createCard = async (interaction, board) => {
     assignmentID = memberInfo[assignment];
   }
 
-  let url = `https://api.trello.com/1/cards?idList=${
-    boardInfo[board].boardID
-  }&key=${trelloInfo.key}&token=${
+  let url = `https://api.trello.com/1/cards?idList=${boardInfo[board].boardID}&key=${trelloInfo.key}&token=${
     trelloInfo.token
   }&name=${title}&desc=${description}&pos=bottom&idLabels=${labels.join()}`;
 
   if (assignmentID) {
     url += `&idMembers=${assignmentID}`;
   }
+
+  logger.log({ level: "info", message: `Attempting to creating Trello card: ${url}` });
 
   await fetch(url, {
     method: "POST",
@@ -48,6 +47,7 @@ createCard = async (interaction, board) => {
     },
   })
     .then((response) => {
+      logger.log({ level: "info", message: `Trello card creation response: ${response.status}` });
       return response.text();
     })
     .then(async (text) => {
@@ -66,14 +66,12 @@ createCard = async (interaction, board) => {
           },
           {
             name: "Labels",
-            value: `${type ? toTitleCase(type) : ""}, ${
-              repo ? repo.toUpperCase() : ""
-            }`,
+            value: `${type ? toTitleCase(type) : ""}, ${repo ? repo.toUpperCase() : ""}`,
           },
           {
             name: "Assigned To",
             value: `${toTitleCase(assignment)}` || "None",
-          },
+          }
         )
         .setTimestamp()
         .setFooter({
@@ -81,12 +79,21 @@ createCard = async (interaction, board) => {
           iconURL:
             "https://avatars.githubusercontent.com/u/179054437?s=400&u=aa1e59a6a9a9772d4516891481dd1d194af01142&v=4",
         });
-
-      await interaction.reply({ embeds: [embed] });
+      logger.log({ level: "info", message: `Trello card created: ${data.id}` });
+      try {
+        await interaction.reply({ embeds: [embed] });
+      } catch (error) {
+        logger.log({ level: "error", message: `Error sending Discord response ${error}` });
+      } finally {
+        logger.log({ level: "info", message: "Discord message successful" });
+      }
     })
     .catch(async (err) => {
-      console.error(err);
-      await interaction.reply("An error occurred while fetching Trello info.");
+      logger.log({
+        level: "error",
+        message: `Error creating Trello card: ${err}`,
+      });
+      await interaction.reply("An error occurred while fetching Trello info");
     });
 };
 

@@ -16,14 +16,9 @@ module.exports = {
           { name: "Task", value: "task" }
         )
     )
+    .addStringOption((option) => option.setName("title").setDescription("Title of card").setRequired(true))
     .addStringOption((option) =>
-      option.setName("title").setDescription("Title of card").setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName("description")
-        .setDescription("Inner card content")
-        .setRequired(true)
+      option.setName("description").setDescription("Inner card content").setRequired(true)
     )
     .addStringOption((option) =>
       option
@@ -37,10 +32,7 @@ module.exports = {
         .setName("assignment")
         .setDescription("Assign to")
         .setRequired(false)
-        .addChoices(
-          { name: "Tom", value: "tom" },
-          { name: "Rob", value: "rob" }
-        )
+        .addChoices({ name: "Tom", value: "tom" }, { name: "Rob", value: "rob" })
     ),
 
   async execute(interaction) {
