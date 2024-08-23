@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node main.js",
-    "build": "node deploy-commands.js",
+    "build": "node deploy-command.js",
     "lint": "prettier . --check",
     "fix": "prettier . --write",
     "prepare": "husky install"
