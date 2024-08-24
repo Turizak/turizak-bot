@@ -6,9 +6,10 @@ const { colorInfo } = require("../data/colorInfo");
 const { toTitleCase } = require("../../../utils/toTitleCase");
 const { logger } = require("../../../utils/logger");
 
-const createCard = async (interaction, board) => {
+const createCard = async (interaction) => {
   const fetch = (await import("node-fetch")).default;
 
+  const board = interaction.options.getString("board");
   const type = interaction.options.getString("type");
   const title = interaction.options.getString("title");
   const description = interaction.options.getString("description");
