@@ -2,8 +2,16 @@
 
 Discord Bot for Turizak projects
 
-All you need:
+All you need to know:
 
 ```
-npm run build && npm run start
+npm install && npm run build
+
+npm run start
+```
+
+Deployed on Fly.io
+
+```
+fly deploy
 ```
