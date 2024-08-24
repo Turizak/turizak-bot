@@ -70,7 +70,7 @@ const createCard = async (interaction, board) => {
           },
           {
             name: "Assigned To",
-            value: `${toTitleCase(assignment)}` || "None",
+            value: `${assignment ? toTitleCase(assignment) : "None"}`,
           }
         )
         .setTimestamp()
