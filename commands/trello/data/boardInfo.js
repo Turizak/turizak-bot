@@ -8,10 +8,6 @@ const boardInfo = {
       fe: "65a307699217e9bccdf10a97",
       be: "65a307699217e9bccdf10a85",
     },
-    memberID: {
-      rob: "63606f17b1d09902b4e0df77",
-      tom: "63604c5c2728f30180d81741",
-    },
   },
   dnd: {
     boardID: process.env.DND_BACKLOGID,
@@ -22,10 +18,6 @@ const boardInfo = {
       fe: "66c100d18a731728c9abcc5a",
       be: "66c100cfdcbc2fdfa7374660",
     },
-    memberID: {
-      rob: "63606f17b1d09902b4e0df77",
-      tom: "63604c5c2728f30180d81741",
-    },
   },
   mtg: {
     boardID: process.env.MTG_BACKLOGID,
@@ -35,10 +27,6 @@ const boardInfo = {
       task: "636064dc1c38c7538d525d4e",
       fe: "636064dc1c38c7538d525d57",
       be: "636064dc1c38c7538d525d50",
-    },
-    memberID: {
-      rob: "63606f17b1d09902b4e0df77",
-      tom: "63604c5c2728f30180d81741",
     },
   },
 };
