@@ -3,8 +3,19 @@ const { createCard } = require("./functions/createCard");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("hivemindcard")
-    .setDescription("Creates Trello card in Hivemind board")
+    .setName("trellocard")
+    .setDescription("Creates Trello card in selected board")
+    .addStringOption((option) =>
+      option
+        .setName("board")
+        .setDescription("Select project board")
+        .setRequired(true)
+        .addChoices(
+          { name: "DnD", value: "dnd" },
+          { name: "Hivemind", value: "hivemind" },
+          { name: "MTG", value: "mtg" }
+        )
+    )
     .addStringOption((option) =>
       option
         .setName("type")
@@ -36,6 +47,6 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    await createCard(interaction, "hivemind");
+    await createCard(interaction);
   },
 };
