@@ -66,7 +66,7 @@ const createCard = async (interaction, board) => {
           },
           {
             name: "Labels",
-            value: `${type ? toTitleCase(type) : ""} ${repo ? ", " + repo.toUpperCase() : ""}`,
+            value: `${type ? toTitleCase(type) : ""}${repo ? ", " + repo.toUpperCase() : ""}`,
           },
           {
             name: "Assigned To",
