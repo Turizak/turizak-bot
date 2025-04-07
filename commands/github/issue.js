@@ -24,7 +24,7 @@ async function createGitHubIssue(interaction) {
     if (repo) labels.push(repo.toUpperCase());
 
     // Create the issue
-    const issueResponse = await octokit.issues.create({
+    const issueResponse = await octokit.request("POST /repos/{owner}/{repo}/issues", {
       owner: GITHUB_ORG,
       repo: GITHUB_REPO,
       title: title,
