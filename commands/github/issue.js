@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { Octokit } = require("@octokit/rest");
+const { Octokit } = require("octokit");
 
 // Initialize Octokit with your GitHub token
 const octokit = new Octokit({
