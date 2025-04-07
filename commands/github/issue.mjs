@@ -1,7 +1,8 @@
-const { SlashCommandBuilder } = require("discord.js");
-const { Octokit } = require("@octokit/rest");
-require("dotenv").config();
+import { SlashCommandBuilder } from "discord.js";
+import { Octokit } from "@octokit/rest";
+import dotenv from "dotenv";
 
+dotenv.config();
 // Initialize Octokit with your GitHub token
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
