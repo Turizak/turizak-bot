@@ -8,15 +8,18 @@ const commands = [];
 // Grab all the command folders from the commands directory you created earlier
 const foldersPath = path.join(__dirname, "commands");
 const commandFolders = fs.readdirSync(foldersPath);
+// Create an array to hold all import promises
+const importPromises = [];
 
 for (const folder of commandFolders) {
-  // Grab all the command files from the commands directory you created earlier
   const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js") || file.endsWith(".mjs"));
-  // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
+  const commandFiles = fs
+    .readdirSync(commandsPath)
+    .filter((file) => file.endsWith(".js") || file.endsWith(".mjs"));
+
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
-    import(filePath)
+    const importPromise = import(filePath)
       .then((command) => {
         if ("data" in command && "execute" in command) {
           commands.push(command.data.toJSON());
@@ -33,6 +36,8 @@ for (const folder of commandFolders) {
           message: `Error importing ${filePath}: ${error}`,
         });
       });
+
+    importPromises.push(importPromise);
   }
 }
 
