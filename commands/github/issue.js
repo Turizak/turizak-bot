@@ -7,9 +7,9 @@ const octokit = new Octokit({
 });
 
 // Constants for GitHub organization and repository
-const GITHUB_ORG = process.env.GITHUB_ORG
-const GITHUB_REPO = process.env.GITHUB_REPO
-const PROJECT_NUMBER = process.env.PROJECT_NUMBER
+const GITHUB_ORG = process.env.GITHUB_ORG;
+const GITHUB_REPO = process.env.GITHUB_REPO;
+const PROJECT_NUMBER = process.env.PROJECT_NUMBER;
 
 async function createGitHubIssue(interaction) {
   try {
@@ -63,34 +63,23 @@ module.exports = {
           { name: "Task", value: "task" }
         )
     )
+    .addStringOption((option) => option.setName("title").setDescription("Title of issue").setRequired(true))
     .addStringOption((option) =>
-      option.setName("title").setDescription("Title of issue").setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName("description")
-        .setDescription("Issue description")
-        .setRequired(true)
+      option.setName("description").setDescription("Issue description").setRequired(true)
     )
     .addStringOption((option) =>
       option
         .setName("repo")
         .setDescription("For frontend or backend")
         .setRequired(false)
-        .addChoices(
-          { name: "FE", value: "fe" },
-          { name: "BE", value: "be" }
-        )
+        .addChoices({ name: "FE", value: "fe" }, { name: "BE", value: "be" })
     )
     .addStringOption((option) =>
       option
         .setName("assignment")
         .setDescription("Assign to")
         .setRequired(false)
-        .addChoices(
-          { name: "Tom", value: "slandath" },
-          { name: "Rob", value: "rakazirut" }
-        )
+        .addChoices({ name: "Tom", value: "slandath" }, { name: "Rob", value: "rakazirut" })
     ),
 
   async execute(interaction) {
