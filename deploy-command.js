@@ -5,77 +5,62 @@ const { logger } = require("./utils/logger");
 require("dotenv").config();
 
 const commands = [];
-// Grab all the command folders from the commands directory you created earlier
 const foldersPath = path.join(__dirname, "commands");
 const commandFolders = fs.readdirSync(foldersPath);
-// Create an array to hold all import promises
-const importPromises = [];
 
 for (const folder of commandFolders) {
   const commandsPath = path.join(foldersPath, folder);
   const commandFiles = fs
     .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".js") || file.endsWith(".mjs"));
+    .filter((file) => file.endsWith(".js"));
 
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
-    const importPromise = import(filePath)
-      .then((command) => {
-        if ("data" in command && "execute" in command) {
-          commands.push(command.data.toJSON());
-        } else {
-          logger.log({
-            level: "warn",
-            message: `The command at ${filePath} is missing a required "data" or "execute" property`,
-          });
-        }
-      })
-      .catch((error) => {
-        logger.log({
-          level: "error",
-          message: `Error importing ${filePath}: ${error}`,
-        });
-      });
+    const command = require(filePath);
 
-    importPromises.push(importPromise);
+    if ("data" in command && "execute" in command) {
+      commands.push(command.data.toJSON());
+      logger.log({
+        level: "info",
+        message: `Loaded command: ${command.data.name}`,
+      });
+    } else {
+      logger.log({
+        level: "warn",
+        message: `The command at ${filePath} is missing a required "data" or "execute" property`,
+      });
+    }
   }
 }
 
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
-// and deploy your commands!
-Promise.all(importPromises)
-  .then(async () => {
-    try {
-      logger.log({
-        level: "info",
-        message: `Started refreshing ${commands.length} application (/) commands.`,
-      });
+// Deploy commands
+(async () => {
+  try {
+    logger.log({
+      level: "info",
+      message: `Started refreshing ${commands.length} application (/) commands.`,
+    });
 
-      // The put method is used to fully refresh all commands in the guild with the current set
-      const data = await rest.put(
-        Routes.applicationGuildCommands(
-          process.env.DISCORD_CLIENTID,
-          process.env.DISCORD_GUILDID
-        ),
-        { body: commands }
-      );
+    // The put method is used to fully refresh all commands in the guild with the current set
+    const data = await rest.put(
+      Routes.applicationGuildCommands(
+        process.env.DISCORD_CLIENTID,
+        process.env.DISCORD_GUILDID
+      ),
+      { body: commands }
+    );
 
-      logger.log({
-        level: "info",
-        message: `Successfully reloaded ${data.length} application (/) commands`,
-      });
-    } catch (error) {
-      logger.log({
-        level: "error",
-        message: `${error}`,
-      });
-    }
-  })
-  .catch((error) => {
+    logger.log({
+      level: "info",
+      message: `Successfully reloaded ${data.length} application (/) commands`,
+    });
+  } catch (error) {
     logger.log({
       level: "error",
-      message: `Error during command deployment: ${error}`,
+      message: `${error}`,
     });
-  });
+  }
+})();
