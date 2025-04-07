@@ -12,27 +12,19 @@ const commandFolders = fs.readdirSync(foldersPath);
 for (const folder of commandFolders) {
   // Grab all the command files from the commands directory you created earlier
   const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js") || file.endsWith(".mjs"));
+  const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js"));
   // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
-    import(filePath)
-      .then((command) => {
-        if ("data" in command && "execute" in command) {
-          commands.push(command.data.toJSON());
-        } else {
-          logger.log({
-            level: "warn",
-            message: `The command at ${filePath} is missing a required "data" or "execute" property`,
-          });
-        }
-      })
-      .catch((error) => {
-        logger.log({
-          level: "error",
-          message: `Error importing ${filePath}: ${error}`,
-        });
+    const command = require(filePath);
+    if ("data" in command && "execute" in command) {
+      commands.push(command.data.toJSON());
+    } else {
+      logger.log({
+        level: "warn",
+        message: `The command at ${filePath} is missing a required "data" or "execute" property`,
       });
+    }
   }
 }
 
@@ -40,37 +32,28 @@ for (const folder of commandFolders) {
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
 // and deploy your commands!
-Promise.all(importPromises)
-  .then(async () => {
-    try {
-      logger.log({
-        level: "info",
-        message: `Started refreshing ${commands.length} application (/) commands.`,
-      });
+(async () => {
+  try {
+    logger.log({
+      level: "info",
+      message: `Started refreshing ${commands.length} application (/) commands.`,
+    });
 
-      // The put method is used to fully refresh all commands in the guild with the current set
-      const data = await rest.put(
-        Routes.applicationGuildCommands(
-          process.env.DISCORD_CLIENTID,
-          process.env.DISCORD_GUILDID
-        ),
-        { body: commands }
-      );
+    // The put method is used to fully refresh all commands in the guild with the current set
+    const data = await rest.put(
+      Routes.applicationGuildCommands(process.env.DISCORD_CLIENTID, process.env.DISCORD_GUILDID),
+      { body: commands }
+    );
 
-      logger.log({
-        level: "info",
-        message: `Successfully reloaded ${data.length} application (/) commands`,
-      });
-    } catch (error) {
-      logger.log({
-        level: "error",
-        message: `${error}`,
-      });
-    }
-  })
-  .catch((error) => {
+    logger.log({
+      level: "info",
+      message: `Successfully reloaded ${data.length} application (/) commands`,
+    });
+  } catch (error) {
+    // And of course, make sure you catch and log any errors!
     logger.log({
       level: "error",
-      message: `Error during command deployment: ${error}`,
+      message: `${error}`,
     });
-  });
+  }
+})();

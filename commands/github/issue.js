@@ -1,17 +1,15 @@
-import { SlashCommandBuilder } from "discord.js";
-import { Octokit } from "@octokit/rest";
-import dotenv from "dotenv";
+const { SlashCommandBuilder } = require("discord.js");
+const { Octokit } = require("@octokit/rest");
 
-dotenv.config();
 // Initialize Octokit with your GitHub token
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
 // Constants for GitHub organization and repository
-const GITHUB_ORG = "your-organization";
-const GITHUB_REPO = "your-repository";
-const PROJECT_NUMBER = "1"; // Your GitHub Project number
+const GITHUB_ORG = process.env.GITHUB_ORG
+const GITHUB_REPO = process.env.GITHUB_REPO
+const PROJECT_NUMBER = process.env.PROJECT_NUMBER
 
 async function createGitHubIssue(interaction) {
   try {
@@ -36,22 +34,6 @@ async function createGitHubIssue(interaction) {
     });
 
     // Add the issue to the project
-    // Note: This requires using the GraphQL API
-    const issueId = issueResponse.data.node_id;
-
-    // Using the GraphQL API to add the issue to the project
-    await octokit.graphql(`
-      mutation {
-        addProjectV2ItemById(input: {
-          projectId: "${PROJECT_NUMBER}"
-          contentId: "${issueId}"
-        }) {
-          item {
-            id
-          }
-        }
-      }
-    `);
 
     await interaction.reply({
       content: `Issue created successfully! View it here: ${issueResponse.data.html_url}`,
