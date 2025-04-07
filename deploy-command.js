@@ -40,28 +40,37 @@ for (const folder of commandFolders) {
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
 // and deploy your commands!
-(async () => {
-  try {
-    logger.log({
-      level: "info",
-      message: `Started refreshing ${commands.length} application (/) commands.`,
-    });
+Promise.all(importPromises)
+  .then(async () => {
+    try {
+      logger.log({
+        level: "info",
+        message: `Started refreshing ${commands.length} application (/) commands.`,
+      });
 
-    // The put method is used to fully refresh all commands in the guild with the current set
-    const data = await rest.put(
-      Routes.applicationGuildCommands(process.env.DISCORD_CLIENTID, process.env.DISCORD_GUILDID),
-      { body: commands }
-    );
+      // The put method is used to fully refresh all commands in the guild with the current set
+      const data = await rest.put(
+        Routes.applicationGuildCommands(
+          process.env.DISCORD_CLIENTID,
+          process.env.DISCORD_GUILDID
+        ),
+        { body: commands }
+      );
 
-    logger.log({
-      level: "info",
-      message: `Successfully reloaded ${data.length} application (/) commands`,
-    });
-  } catch (error) {
-    // And of course, make sure you catch and log any errors!
+      logger.log({
+        level: "info",
+        message: `Successfully reloaded ${data.length} application (/) commands`,
+      });
+    } catch (error) {
+      logger.log({
+        level: "error",
+        message: `${error}`,
+      });
+    }
+  })
+  .catch((error) => {
     logger.log({
       level: "error",
-      message: `${error}`,
+      message: `Error during command deployment: ${error}`,
     });
-  }
-})();
+  });
