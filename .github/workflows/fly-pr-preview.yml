@@ -31,5 +31,5 @@ jobs:
         id: deploy
         with:
           region: waw
-          org: personal
+          org: Turizak
           name: pr-preview-${{ github.event.number }}
