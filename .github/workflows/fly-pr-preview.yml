@@ -31,4 +31,4 @@ jobs:
         with:
           region: waw
           org: personal
-          app-name: pr-preview-${{ github.event.number }}
+          name: pr-preview-${{ github.event.number }}
