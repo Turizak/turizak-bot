@@ -18,7 +18,7 @@ jobs:
   preview-app:
     if: contains(github.event.pull_request.labels.*.name, 'PR preview app')
     runs-on: ubuntu-latest
-    name: preview app
+    name: Preview app
     environment:
       name: pr-${{ github.event.number }}
       url: ${{ steps.deploy.outputs.url }}
@@ -31,3 +31,4 @@ jobs:
         with:
           region: waw
           org: personal
+          app-name: pr-preview-${{ github.event.number }}
