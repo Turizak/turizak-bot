@@ -30,6 +30,6 @@ jobs:
         uses: superfly/fly-pr-review-apps@1.2.0
         id: deploy
         with:
-          region: waw
-          org: Turizak
+          region: ord
+          org: personal
           name: pr-preview-${{ github.event.number }}
