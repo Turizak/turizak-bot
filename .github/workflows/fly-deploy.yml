@@ -10,7 +10,7 @@ on:
       - main
 jobs:
   deploy:
-    name: Deploy app
+    name: deploy app
     runs-on: ubuntu-latest
     concurrency: deploy-group    # optional: ensure only one action runs at a time
     steps:
