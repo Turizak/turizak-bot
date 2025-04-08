@@ -1,6 +1,6 @@
 # turizak-bot
 
-Discord Bot for Turizak projects
+A Discord Bot for Turizak projects
 
 All you need to know:
 
