@@ -1,27 +1,23 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { Octokit } = require("octokit");
 
-// Initialize Octokit with your GitHub token
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-// Constants for GitHub organization and repository
 const GITHUB_ORG = process.env.GITHUB_ORG;
 const GITHUB_REPO = process.env.GITHUB_REPO;
-const PROJECT_NUMBER = process.env.PROJECT_NUMBER;
 
 async function createGitHubIssue(interaction) {
   try {
     const type = interaction.options.getString("type");
     const title = interaction.options.getString("title");
     const description = interaction.options.getString("description");
-    const repo = interaction.options.getString("repo");
     const assignment = interaction.options.getString("assignment");
+    const label = interaction.options.getString("label");
 
     // Create labels based on type and repo
-    const labels = [type];
-    if (repo) labels.push(repo.toUpperCase());
+    const labels = [type, label];
 
     // Create the issue
     const issueResponse = await octokit.request("POST /repos/{owner}/{repo}/issues", {
@@ -50,8 +46,20 @@ async function createGitHubIssue(interaction) {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("githubissue")
-    .setDescription("Creates GitHub issue and adds it to the project")
+    .setName("issue")
+    .setDescription("Creates GitHub issue for Unnamed Chat")
+    .addStringOption((option) =>
+      option
+        .setName("label")
+        .setDescription("Label")
+        .setRequired(true)
+        .addChoices(
+          { name: "Bug", value: "bug" },
+          { name: "Documentation", value: "documentation" },
+          { name: "Enhancement", value: "enhancement" },
+          { name: "Test", value: "test" }
+        )
+    )
     .addStringOption((option) =>
       option
         .setName("type")
@@ -66,13 +74,6 @@ module.exports = {
     .addStringOption((option) => option.setName("title").setDescription("Title of issue").setRequired(true))
     .addStringOption((option) =>
       option.setName("description").setDescription("Issue description").setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName("repo")
-        .setDescription("For frontend or backend")
-        .setRequired(false)
-        .addChoices({ name: "FE", value: "fe" }, { name: "BE", value: "be" })
     )
     .addStringOption((option) =>
       option
